@@ -9,7 +9,7 @@ namespace ortoBot
 {
     class Program
     {
-        private static string version = "1.3.3";
+        private static string version = "1.3.4";
         private static OrtoBot ortoBot;
         private static Settings settings;
 
