@@ -1,4 +1,5 @@
 # ortoBot
+[![Build Status](https://travis-ci.com/casrou/ortoBot.svg?token=9rfyGsm1xydBPACurxpn&branch=master)](https://travis-ci.com/casrou/ortoBot)
 
 ## Getting Started
 _work in progress.._
