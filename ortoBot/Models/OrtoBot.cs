@@ -197,6 +197,7 @@ namespace ortoBot
         internal void SetNanoleaf(INanoleafClient nanoleaf)
         {
             this.nanoleaf = nanoleaf;
+            nanoleaf.SetEffectAsync(settings.defaultEffect);
         }
 
         internal void SetTwitchClient(SimpleTwitchClient twitchClient)

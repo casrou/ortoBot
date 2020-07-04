@@ -58,8 +58,7 @@ namespace ortoBot
             else
             {
                 nanoleaf = new SimpleNanoleafClient($"http://{settings.ip}:16021", settings.authToken);
-            }
-            await nanoleaf.SetEffectAsync(settings.defaultEffect);
+            }            
             Log.Information($"Nanoleaf connected!");
             ortoBot.SetNanoleaf(nanoleaf);
         }
