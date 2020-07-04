@@ -1,6 +1,6 @@
 # ortoBot [![Build Status](https://travis-ci.com/casrou/ortoBot.svg?token=9rfyGsm1xydBPACurxpn&branch=master)](https://travis-ci.com/casrou/ortoBot)
 
-Let your Nanoleaf lights be controlled by Twitch subscriptions and bit-donations. Built in collaboration with the one and only [ortopilot](https://www.twitch.tv/ortopilot).
+Let your Nanoleaf lights be controlled by Twitch subscriptions, bit-donations and more! Built in collaboration with the one and only [ortopilot](https://www.twitch.tv/ortopilot).
 
 ![Demo](https://github.com/casrou/ortobot/raw/master/media/demo.gif "Demo")
 ## Getting Started
