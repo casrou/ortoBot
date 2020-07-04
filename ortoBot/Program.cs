@@ -9,7 +9,7 @@ namespace ortoBot
 {
     class Program
     {
-        private static string version = "1.3.4";
+        private static string version = "1.3.5";
         private static OrtoBot ortoBot;
         private static Settings settings;
 
@@ -18,7 +18,7 @@ namespace ortoBot
             SetupLogging();
             SetupConfiguration();
 
-            await SetupAsync();
+            Setup();
 
             while (true)
             {
@@ -27,7 +27,7 @@ namespace ortoBot
             }
         }
 
-        private static async Task SetupAsync()
+        private static void Setup()
         {
             PrintWelcome();
 
@@ -38,7 +38,7 @@ namespace ortoBot
 
             ortoBot = new OrtoBot(settings);
 
-            await ConnectNanoleaf();
+            ConnectNanoleaf();
 
             //await ConnectDiscord();
 
@@ -46,7 +46,7 @@ namespace ortoBot
 
             Log.Information("");
         }
-        private static async Task ConnectNanoleaf()
+        private static void ConnectNanoleaf()
         {
             Log.Information("Connecting to Nanoleaf... " +
                 $"({settings.ip}, {settings.authToken})");
