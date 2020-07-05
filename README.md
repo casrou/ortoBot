@@ -18,6 +18,9 @@ botUsername: your twitch username, eg. "casrou"
 botOauth: use ACCESS TOKEN from below, ie. "oauth:*ACCESS TOKEN*" (without asterisks)
 botJoinChannel: your twitch username, eg. "casrou"
 ```
+If you have Nanoleaf lights insert the IP of the Nanoleaf in `ip` and the authenticatin token in `authToken` (guide may come later). You may also have to add some of the effects of you Nanoleaf to the `keywords` (The syntax is `"*keyword*": "*Effect Name*"`).
+
+You should probably ignore PubSub settings for now and just test manually.
 ### Get OAuth
 - https://twitchtokengenerator.com/
 - Bot Chat Token
@@ -29,6 +32,6 @@ botJoinChannel: your twitch username, eg. "casrou"
 #### Visual Studio
 - Start debugging
 - Go to your Twitch channel (you don't have to be streaming)
-- Try a bot command in the chat, e.g. "!ortobot effects"
+- Try a bot command in the chat, e.g. "!ortobot effects" or "!ortobot lights:rainbow username:test bits:100"
 
 ![The output of the command should then be printed to the console](https://github.com/casrou/ortobot/raw/master/media/gettingstarted1.png "Getting Started")

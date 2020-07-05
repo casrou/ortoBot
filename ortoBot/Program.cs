@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Nanoleaf.Client;
 using Nanoleaf.Client.Interfaces;
 using Serilog;
 using System;
@@ -9,16 +10,18 @@ namespace ortoBot
 {
     class Program
     {
-        private static string version = "1.3.5";
+        private static string version = "1.3.6";
         private static OrtoBot ortoBot;
         private static Settings settings;
 
         static async Task Main(string[] args)
         {
-            SetupLogging();
             SetupConfiguration();
+            SetupLogging();            
 
             Setup();
+
+            await ortoBot.Start();
 
             while (true)
             {
@@ -51,13 +54,13 @@ namespace ortoBot
             Log.Information("Connecting to Nanoleaf... " +
                 $"({settings.ip}, {settings.authToken})");
             INanoleafClient nanoleaf;
-            if (settings.debug)
+            if (settings.ip == "" || settings.authToken == "")
             {
                 nanoleaf = new FakeNanoleafClient(settings);
             }
             else
             {
-                nanoleaf = new SimpleNanoleafClient($"http://{settings.ip}:16021", settings.authToken);
+                nanoleaf = new SimpleNanoleafClient(settings.ip, settings.authToken);
             }            
             Log.Information($"Nanoleaf connected!");
             ortoBot.SetNanoleaf(nanoleaf);
@@ -77,7 +80,7 @@ namespace ortoBot
             Log.Information("Setting up Twitch client..." +
                 $"({settings.botUsername}, {settings.botOauth}, {settings.botJoinChannel})");
             SimpleTwitchClient twitchClient;
-            if (settings.debug)
+            if (settings.botJoinChannel == "")
             {
                 twitchClient = new FakeTwitchClient(settings, ortoBot);
             }
@@ -87,7 +90,7 @@ namespace ortoBot
             }
             ortoBot.SetTwitchClient(twitchClient);
 
-            if (!settings.debug)
+            if (settings.channelId != "" && settings.oauth != "")
             {
                 Log.Information("Connecting to Twitch PubSub... " +
                 $"({settings.channelId}, {settings.oauth})");
@@ -108,12 +111,21 @@ namespace ortoBot
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(SimpleExceptionHandler);
 
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
+            var logConfig = new LoggerConfiguration()                
                 .WriteTo.Console(outputTemplate:
-                "{Message:lj}{NewLine}{Exception}")
-                .WriteTo.File("logs\\ortoLog.txt", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
+                    "{Message:lj}{NewLine}{Exception}")
+                .WriteTo.File("logs\\ortoLog.txt", rollingInterval: RollingInterval.Day);
+
+            if (settings.debug) 
+            {
+                logConfig.MinimumLevel.Debug();
+            } 
+            else
+            {
+                logConfig.MinimumLevel.Information();
+            }
+
+            Log.Logger = logConfig.CreateLogger();
         }
 
         static void SimpleExceptionHandler(object sender, UnhandledExceptionEventArgs args)

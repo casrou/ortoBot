@@ -21,7 +21,7 @@ namespace ortoBot
         public new async Task<List<string>> GetEffectsAsync()
         {
             List<string> result = await base.GetEffectsAsync();
-            Log.Information($"Nanoleaf: GetEffectsAsync({String.Join(", ", result)})");
+            Log.Information($"Nanoleaf: GetEffectsAsync({string.Join(", ", result)})");
             return result;
         }
 
@@ -37,6 +37,11 @@ namespace ortoBot
                 Log.Fatal(e.ToString());
                 throw;
             }
+        }
+
+        public new async Task<Nanoleaf.Client.Models.Responses.Info> GetInfoAsync()
+        {
+            return await base.GetInfoAsync();
         }
     }
 }

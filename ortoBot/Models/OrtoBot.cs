@@ -20,6 +20,33 @@ namespace ortoBot
         private Settings settings;
         private TwitchPubSub twitchPubSub;
 
+        internal async Task Start()
+        {
+            var info = await nanoleaf.GetInfoAsync();
+            Log.Debug(info.Name);
+
+            Log.Debug("Nanoleaf Effects:");
+            var nanoleafEffects = await nanoleaf.GetEffectsAsync();
+            nanoleafEffects.ForEach(e => Log.Debug($"\t{e}"));
+
+            if (nanoleafEffects.Count == 0) Log.Warning("No Nanoleaf effects. Create effects in the Nanoleaf app.");
+
+            Log.Debug("Available Effects:");
+            var availableEffects = settings.keywords.Where(k => nanoleafEffects.Contains(k.Value)).ToList();
+            availableEffects.ForEach(e => Log.Debug($"\t{e}"));
+
+            if (availableEffects.Count() == 0)
+            {
+                Log.Warning("No available effects. Check your appsettings keywords.");
+            } else if (nanoleafEffects.Count > availableEffects.Count)
+            {
+                Log.Information("Your Nanoleaf has effects, that has not yet been added to the appsettings keywords.");
+                nanoleafEffects.Except(availableEffects.Select(kw => kw.Value)).ToList().ForEach(e => Log.Debug($"\t{e}"));
+            }
+
+            await nanoleaf.SetEffectAsync(settings.defaultEffect);
+        }               
+
         public OrtoBot(Settings settings)
         {
             this.settings = settings;
@@ -56,9 +83,9 @@ namespace ortoBot
         }
 
         private async Task ProcessEffect(Effect br)
-        {
-            br.Begin();
+        {            
             await nanoleaf.SetEffectAsync(br.EffectName);
+            br.Begin();
             while (br.RemainingMilliseconds > 0)
             {
                 Console.Write("\u2592");
@@ -129,8 +156,6 @@ namespace ortoBot
                 return;
             }
 
-            int milliseconds = (int)Math.Floor(e.BitsUsed * settings.bitsToSecRatio * 1000);
-
             BitEffect be = new BitEffect(effect, e.Username, e.BitsUsed);
 
             queue.EnqueueBitEffect(be);
@@ -167,12 +192,7 @@ namespace ortoBot
         internal void HandleFollowerAsync(OnFollowArgs args)
         {
             Console.WriteLine();
-            Log.Information($"{args.DisplayName} has just followed!");
-            /*if (settings.debug)
-            {
-                SubEffect se = new SubEffect(1, SubscriptionPlan.Tier1);
-                queue.EnqueueSubEffect(se);
-            }*/
+            Log.Debug($"{args.DisplayName} has just followed!");
         }
 
         internal void Reset()
@@ -196,8 +216,7 @@ namespace ortoBot
 
         internal void SetNanoleaf(INanoleafClient nanoleaf)
         {
-            this.nanoleaf = nanoleaf;
-            nanoleaf.SetEffectAsync(settings.defaultEffect);
+            this.nanoleaf = nanoleaf;            
         }
 
         internal void SetTwitchClient(SimpleTwitchClient twitchClient)
